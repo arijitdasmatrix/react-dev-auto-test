@@ -1,12 +1,12 @@
 import React from "react"
 import Form from 'react-bootstrap/Form';
 
-const FormAlertMutedText = (props) => {
-
+const FormAlertMutedText = ({text}) => {
+console.log("text",text);
 return (
 <>
 <Form.Text className="text-muted">
-  We'll never share your email with anyone else.
+ {text}
 </Form.Text>    
 </>
 )
