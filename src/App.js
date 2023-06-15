@@ -28,6 +28,7 @@ function App() {
   emailErr:"",
   phoneErr:""
   });
+  const [toggle,setToggle] = useState(false);
   const [interestOptions,setInterestOptions] = useState(["Sports","Study","Music","Dance"]);
   const [uploadedImage,setUploadedImage] = useState({profileImage:null,uploadedImage:null});
   const [MultiSelectData,setMultiSelectData] = useState([]);
@@ -205,6 +206,7 @@ function App() {
       'Access-Control-Allow-Origin': '*'
       }
       }).then((response) => {
+        setToggle(!toggle);  
       console.log("response",response);
       }).catch((error) => {
         console.log("response",error);
@@ -222,7 +224,7 @@ function App() {
   }  
 
   }
-
+  console.log("tottle",toggle);
  
   return (
   <div className="App">
@@ -351,7 +353,7 @@ function App() {
   <div  >
   
   </div> 
-  <Listing />
+  <Listing changes={toggle}/>
  </div>
   );
 }

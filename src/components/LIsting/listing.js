@@ -7,8 +7,8 @@ import axios from 'axios';
   
 
 
-const Listing = () => {
-    const [users,setUsers] = useState([]);
+const Listing = (props) => {
+    const [users,setUsers] = useState(null);
 
     useEffect(() => {
         axios.get('http://localhost:5000/Users')
@@ -20,13 +20,22 @@ const Listing = () => {
           console.log(response.config);
         if(response.status == 200 && response.statusText == "OK") {
           console.log("EEEEE",response.data.users);
+          setUsers(response.data.users);
         }
         }).catch((error) => {
         console.log(error.message);
         });
-        },[]);
+        },[props.changes]);
       
-      //  console.log("users",users);
+     //   console.log("usersss",users[0],props.changes);
+
+     function myFunction(data) {
+       console.log("data",data);
+       
+     }
+
+
+
 return (
 <>
 <table id="customers">
@@ -34,11 +43,11 @@ return (
 
     <tr>
     <th>Name</th>
-    <th>Father's Name</th>
-    <th>Mothers's Name</th>
+    <th>Description</th>
     <th>Gender</th>
+    <th>Email</th>
     <th>Date Of Birth</th>
-    <th>Education</th>
+    <th>Sports Interest</th>
     <th>Actions</th>
   </tr>
  
@@ -46,23 +55,35 @@ return (
   </thead>
   <tbody>
 
-  { users.length > 0 ?  users.users.map((user,index) => {
- 
- return (
-  <tr>
-    <td>Alfreds Futterkiste</td>
-    <td>Maria Anders</td>
-    <td>Germany</td>
-    <td>Male</td>
-    <td>20-01-1995</td>
+  
+
+
+  {
+   users != null ? users[0].map((user,index) => {
+    return (
+    <tr>
+    <td>{user.name}</td>
+    <td>{user.comment}</td>
+    <td>{user.Gender}</td>
+    <td>{user.Email}</td>
+
+<td>{  
+
+   
+   myFunction(user.sportsInterest)
+
+}</td>
+
+
     <td>B-tech</td>
     <td><button> <FontAwesomeIcon icon={faTrash} /> </button> || <button><FontAwesomeIcon icon={faPenToSquare} /></button> </td>
   </tr>
-  )
+    )
+   }) : <h2>Loading</h2>
+   } 
 
-})
- : "Loading"
-}  
+
+  
 
   </tbody>
   </table>   
