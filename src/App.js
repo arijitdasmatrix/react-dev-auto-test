@@ -16,7 +16,6 @@ import Listing from "./components/LIsting/listing";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 function App() {
-
   const [user,setUser] = useState();
   const [inputValue, setInputValue] = useState({ name: "",  description: "", gender :"", dateofbirth:"", country:"", email:"", phone:"" });
   const [inputValidError, setInputValidError] = useState({ 
@@ -236,7 +235,7 @@ function App() {
    });  
   }  
   }
- 
+   
  
 
 
@@ -372,11 +371,7 @@ function App() {
   <Listing changes={toggle} />
   <ToastContainer/>
 
-  <BrowserRouter>
-      <Routes>
-      {/* <Route index element={<Home />} /> */}
-      </Routes>
-    </BrowserRouter>
+
  </div>
  
   );

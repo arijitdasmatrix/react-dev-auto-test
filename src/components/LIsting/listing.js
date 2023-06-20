@@ -6,30 +6,27 @@ import axios from 'axios';
 import { Alert } from "react-bootstrap";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from "react-router-dom";
 const Listing = (props) => {
-    const [users,setUsers] = useState(null);
-    const [deleteTimes,setDeleteTimes] = useState(0);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        axios.get('http://localhost:5000/Users')
-        .then((response) => {
-          console.log(response.data);
-          console.log(response.status);
-          console.log(response.statusText);
-          console.log(response.headers);
-          console.log(response.config);
-        if(response.status == 200 && response.statusText == "OK") {
-          console.log("EEEEE",response.data.users);
-          setUsers(response.data.users);
-        }
-        }).catch((error) => {
-        console.log(error.message);
-        });
-        },[props.changes,deleteTimes]);
+  const [users,setUsers] = useState(null);
+  const [deleteTimes,setDeleteTimes] = useState(0);
+  useEffect(() => {
+  axios.get('http://localhost:5000/Users')
+  .then((response) => {
+  console.log(response.data);
+  console.log(response.status);
+  console.log(response.statusText);
+  console.log(response.headers);
+  console.log(response.config);
+  if(response.status == 200 && response.statusText == "OK") {
+  console.log("EEEEE",response.data.users);
+  setUsers(response.data.users);
+  }
+  }).catch((error) => {
+  console.log(error.message);
+  });
+  },[props.changes,deleteTimes]);
     
-const deleteUser = (data) => {
+  const deleteUser = (data) => {
   axios.delete(`http://localhost:5000/Users/deleteUser/${data}`)
   .then((response) => {
   if(response.status == 200 && response.statusText == "OK") {
@@ -46,7 +43,7 @@ const deleteUser = (data) => {
 
 
 const updateUser = (data) => {
-  navigate("/session-timed-out");
+ // navigate("/session-timed-out");
 }
 
 return (
