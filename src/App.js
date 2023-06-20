@@ -1,5 +1,6 @@
 import React, { useState, useRef , useEffect } from 'react';
 import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import FormInputText from './components/FormInput/formInputText';
 import Button from 'react-bootstrap/Button';
@@ -12,7 +13,10 @@ import Col from 'react-bootstrap/Col';
 import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios';
 import Listing from "./components/LIsting/listing";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
+
   const [user,setUser] = useState();
   const [inputValue, setInputValue] = useState({ name: "",  description: "", gender :"", dateofbirth:"", country:"", email:"", phone:"" });
   const [inputValidError, setInputValidError] = useState({ 
@@ -34,7 +38,7 @@ function App() {
   const [MultiSelectData,setMultiSelectData] = useState([]);
   const [sportsInterestData,setSportsInterestData] = useState([]);
   const multiselectRef = useRef(null);
-  const [multipleImageFiles,setMultipleImageFiles] = useState(null);
+  const [multipleImageFiles,setMultipleImageFiles] = useState("");
   const [profileImage,setProfileImage] = useState(null);
   const handleChange = (e) => {
   const { name, value } = e.target;
@@ -193,10 +197,10 @@ function App() {
     gender : inputValue.gender, 
     dateofbirth : inputValue.dateofbirth, 
     country: inputValue.country, 
-    degreeandcertificates:JSON.stringify(certificatesresponse), 
-    interest:JSON.stringify(MultiSelectData), 
+    degreeandcertificates:certificatesresponse.toString(), 
+    interest:MultiSelectData.toString(), 
     profileImage:profileimageresponse, 
-    sportsInterest:JSON.stringify(sportsInterestData),
+    sportsInterest:sportsInterestData.toString(),
     email:inputValue.email,
     phone:inputValue.phone
     }
@@ -208,6 +212,15 @@ function App() {
       }).then((response) => {
         setToggle(!toggle);  
       console.log("response",response);
+      toast.success('Profile Data Inserted Successfully !!', {
+      position: toast.POSITION.TOP_RIGHT
+      });
+      setInputValue({ name: "",  description: "", gender :"", dateofbirth:"", country:"", email:"", phone:"" });
+      setUploadedImage({profileImage:null,uploadedImage:null});
+      setMultiSelectData([]);
+      setSportsInterestData([]);
+      setMultipleImageFiles(null);
+      setProfileImage(null);
       }).catch((error) => {
         console.log("response",error);
       })
@@ -222,14 +235,15 @@ function App() {
    console.log(error);
    });  
   }  
-
   }
-  console.log("tottle",toggle);
  
+ 
+
+
   return (
   <div className="App">
   <div className='slot-button' >     
-  <button className='add-button-style'> Add </button> 
+  <button className='add-button-style' > Add </button> 
   </div> 
   <Container>
   <Row>
@@ -290,6 +304,7 @@ function App() {
   </Form.Group>
 
   <Form.Group>
+    <Form.Label>Date Of Birth</Form.Label>
   <Form.Control type="date"  lebel="Date Of Birth :"   className='form-input' onChange={handleChange} name="dateofbirth" value={inputValue.dateofbirth}/>
   <FormAlertMutedText text={inputValidError.dateofbirthErr}  />
   </Form.Group>
@@ -297,9 +312,9 @@ function App() {
   <Form.Group className='RadioButtonDesign'>
   <p inline >Sports Interest :   </p>  
   <Form.Group className="mb-3" controlId="formBasicCheckbox">
-  <Form.Check type="checkbox" label="Football" value="Football" name="sportsInterest"  inline onChange={sportsInterestDataHadleing} />
-  <Form.Check type="checkbox" label="Cricket" value="Cricket"  name="sportsInterest"  inline onChange={sportsInterestDataHadleing}/>
-  <Form.Check type="checkbox" label="Basketball" value="Basketball"  name="sportsInterest"  inline onChange={sportsInterestDataHadleing}/>
+  <Form.Check type="checkbox" label="Football" value="Football" name="sportsInterest"  inline onChange={sportsInterestDataHadleing}  checked={sportsInterestData.includes('Football')} />
+  <Form.Check type="checkbox" label="Cricket" value="Cricket"  name="sportsInterest"  inline onChange={sportsInterestDataHadleing} checked={sportsInterestData.includes('Cricket')} />
+  <Form.Check type="checkbox" label="Basketball" value="Basketball"  name="sportsInterest"  inline onChange={sportsInterestDataHadleing} checked={sportsInterestData.includes('Basketball')} />
   </Form.Group>
   <FormAlertMutedText text={inputValidError.sportsInterestErr}  />
   </Form.Group>
@@ -321,7 +336,7 @@ function App() {
 
 <Form.Group controlId="formFile" className="mb-3">
 <Form.Label>PLease Upload Your Degree and Certificates</Form.Label>
-<Form.Control type="file" onChange={onImageChange} multiple />
+<Form.Control type="file" onChange={onImageChange} multiple  accept='application/pdf, image/png' />
 <FormAlertMutedText text={inputValidError.multipleImageErr} />
 </Form.Group>
 
@@ -331,9 +346,10 @@ function App() {
 <FormAlertMutedText text={inputValidError.ImageErr} />
 </Form.Group>
 <Form.Group controlId="formFile" className="mb-3">
-<Form.Label>Profile Image</Form.Label>
+<Form.Label>Please Select Your Interest</Form.Label>
 <Multiselect
   isObject={false}
+  selectedValues={MultiSelectData}
   onRemove={(e) => {setInputValidError(inputValidError => ({...inputValidError,interestErr: ""})); setMultiSelectData(Array.isArray(e) ? e.map(x => x) : []);}}
   onSelect={(e) => {setInputValidError(inputValidError => ({...inputValidError,interestErr: ""}));  setMultiSelectData(Array.isArray(e) ? e.map(x => x) : []);}}
   options={interestOptions}
@@ -350,11 +366,19 @@ function App() {
   </Col>
   </Row>
 </Container>
-  <div  >
+  <div >
   
   </div> 
-  <Listing changes={toggle}/>
+  <Listing changes={toggle} />
+  <ToastContainer/>
+
+  <BrowserRouter>
+      <Routes>
+      {/* <Route index element={<Home />} /> */}
+      </Routes>
+    </BrowserRouter>
  </div>
+ 
   );
 }
 

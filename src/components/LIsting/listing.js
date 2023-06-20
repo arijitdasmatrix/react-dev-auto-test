@@ -3,12 +3,14 @@ import React, {useState , useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash , faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-
-  
-
-
+import { Alert } from "react-bootstrap";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 const Listing = (props) => {
     const [users,setUsers] = useState(null);
+    const [deleteTimes,setDeleteTimes] = useState(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('http://localhost:5000/Users')
@@ -25,29 +27,45 @@ const Listing = (props) => {
         }).catch((error) => {
         console.log(error.message);
         });
-        },[props.changes]);
-      
-     //   console.log("usersss",users[0],props.changes);
+        },[props.changes,deleteTimes]);
+    
+const deleteUser = (data) => {
+  axios.delete(`http://localhost:5000/Users/deleteUser/${data}`)
+  .then((response) => {
+  if(response.status == 200 && response.statusText == "OK") {
+  setDeleteTimes(deleteTimes + 1);
+  toast.success('Deleted successfully !', {
+  position: toast.POSITION.TOP_RIGHT,
+  autoClose: 5000
+  });
+  }
+  }).catch((error) => {
+  console.log(error.message);
+  });
+};
 
-     function myFunction(data) {
-       console.log("data",data);
-       
-     }
 
-
+const updateUser = (data) => {
+  navigate("/session-timed-out");
+}
 
 return (
 <>
 <table id="customers">
   <thead>
 
-    <tr>
+  <tr>
     <th>Name</th>
     <th>Description</th>
     <th>Gender</th>
     <th>Email</th>
     <th>Date Of Birth</th>
+    <th>Degree And Certificates</th>
     <th>Sports Interest</th>
+    <th>Profile Image</th>
+    <th>Country</th>
+    <th>Phone Number</th>
+    <th>Interests</th>
     <th>Actions</th>
   </tr>
  
@@ -66,17 +84,14 @@ return (
     <td>{user.comment}</td>
     <td>{user.Gender}</td>
     <td>{user.Email}</td>
-
-<td>{  
-
-   
-   myFunction(user.sportsInterest)
-
-}</td>
-
-
-    <td>B-tech</td>
-    <td><button> <FontAwesomeIcon icon={faTrash} /> </button> || <button><FontAwesomeIcon icon={faPenToSquare} /></button> </td>
+    <td>{user.dateofbirth}</td>
+    <td><ul>{user.degreeandcertificates.split(',').map((user) => { return <li><img src={`http://${user}`} width={150}  /> </li>}) }</ul></td>
+    <td><ul>{user.sportsInterest.split(',').map((user) => { return <li>{user}</li>}) }</ul></td>
+    <td><img src={`http://${user.profileImage}`} width={150}/></td>
+    <td>{user.country}</td>
+    <td>{user.PhoneNo}</td>
+    <td><ul>{user.interest.split(',').map((user) => { return <li>{user}</li>}) }</ul></td>
+    <td><button> <FontAwesomeIcon icon={faTrash} onClick={() => { deleteUser(user.id)  }} /> </button> || <button><FontAwesomeIcon  onClick={() => { updateUser(user.id)  }}  icon={faPenToSquare} /></button> </td>
   </tr>
     )
    }) : <h2>Loading</h2>
@@ -87,6 +102,7 @@ return (
 
   </tbody>
   </table>   
+  <ToastContainer />
 </>
 )
 
