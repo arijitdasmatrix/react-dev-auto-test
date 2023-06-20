@@ -284,7 +284,7 @@ function App() {
    value="Male"
    type="radio"
    aria-label="radio 1"
-   label="Design"
+   label="Male"
    onChange={handleChange}
    name="gender"
    checked={inputValue.gender == "Male" ? true : false}
@@ -293,7 +293,7 @@ function App() {
    value="Female"
    type="radio"
    aria-label="radio 2"
-   label="Food"
+   label="Female"
    name="gender"
    onChange={handleChange}
    checked={inputValue.gender == "Female" ? true : false}
